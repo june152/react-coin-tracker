@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import axios from "axios"
 
 function App() {
+  const [loading, setLoading] = useState(true)
+  const [coins, setCoins] = useState([])
+  useEffect(() => {
+    axios.get("https://api.coinpaprika.com/v1/tickers")
+          .then((res) => {
+            setCoins(res.data)
+          })
+      setLoading(false)
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>The Coins! {loading ? null : coins.length}</h1>
+      {loading ? <strong>Loading.........</strong> : null}
+      <ul>
+        {coins.map((coin) => <li key={coin.id}>Coin Name : {coin.name} ({coin.symbol}) Price : ${coin.quotes.USD.price} USD</li>)}
+      </ul>
     </div>
   );
 }
